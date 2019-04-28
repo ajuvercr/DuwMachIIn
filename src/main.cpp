@@ -1,50 +1,42 @@
 #include "Arduino.h"
 #include <Servo.h>
+#include "SharpIR.h"
 
-class Motor {
-  private:
-    int left;
-    int right;
-    int enable;
-    int speed;
+#include "Motor.h"
 
-  public:
-    Motor(int left_v, int right_v, int enable_v): 
-      left(left_v), right(right_v), enable(enable_v), speed(0) 
-    {}
+#define IR A3 // define signal pin
+#define model 1080 // used 1080 because model GP2Y0A21YK0F is used
 
-    ~Motor() {}
+Motor left(8, 9, 10);
+Motor right(7, 6, 5);
+SharpIR SharpIR(IR, model);
 
-    void init() const
-    {
-      pinMode(this->left, OUTPUT);
-      pinMode(this->right, OUTPUT);
-      pinMode(this->enable, OUTPUT);
-    }
+Servo myservo;  // create servo object to control a servo
+int pos = 0;    // variable to store the servo position
 
-    void TurnMotor(int speed, bool clockwise) const
-    {
-      analogWrite(this->enable, 0);
-      digitalWrite(this->left, LOW);
-      digitalWrite(this->right, LOW);
-      if (clockwise)
-        digitalWrite(this->right, HIGH);
-      else
-        digitalWrite(this->left, HIGH);
+int analogPin = A3; // potentiometer wiper (middle terminal) connected to analog pin 3
+                    // outside leads to ground and +5V
+int val = 0;  // variable to store the value read
 
-      analogWrite(this->enable, speed);
-    }
-};
+void test_motor();
+void test_servo();
+void test_dist();
 
-Motor left = Motor(8, 9, 10);
-Motor right = Motor(7, 6, 5);
-
-void setup() {
-  left.init();
-  right.init();
+void setup () 
+{
+  // left.init();
+  // right.init();
+  // myservo.attach(9);  // attaches the servo on pin 9 to the servo object
+  Serial.begin(9600);           //  setup serial
 }
 
-void loop() {
+void loop ()
+{
+  test_dist();
+}
+
+void test_motor ()
+{
   left.TurnMotor(128, true);
   right.TurnMotor(128, false);
   delay(500);
@@ -60,9 +52,20 @@ void loop() {
   delay(50);
 }
 
+void test_servo ()
+{
+  long dur = 500;
 
+  myservo.write(0);
+  delay(dur);
+  myservo.write(180);
+  delay(dur);
+}
 
-
-
-
+void test_dist ()
+{
+  val = SharpIR.distance();
+  Serial.println(val);          // debug value
+  delay(500);
+}
 

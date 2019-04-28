@@ -13,3 +13,9 @@ platformio update
 ```
 platformio run -t upload
 ```
+
+## Read monitor
+
+```
+pio device monitor
+```
