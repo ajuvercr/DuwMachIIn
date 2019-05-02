@@ -27,6 +27,7 @@ class SharpIR
   public:
 
     SharpIR (int irPin, long sensorModel);
+    void Init();
     int distance();
 
   private:

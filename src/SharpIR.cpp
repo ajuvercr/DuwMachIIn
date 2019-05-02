@@ -51,14 +51,7 @@
 SharpIR::SharpIR(int irPin, long sensorModel) {
   
     _irPin=irPin;
-    _model=sensorModel;
-    
-    // Define pin as Input
-    pinMode (_irPin, INPUT);
-    
-    #ifdef ARDUINO
-      analogReference(DEFAULT);
-    #endif
+    _model=sensorModel;   
 }
 
 // Sort an array
@@ -75,6 +68,16 @@ void SharpIR::sort(int a[], int size) {
         }
         if (flag) break;
     }
+}
+
+void SharpIR::Init()
+{
+    // Define pin as Input
+    pinMode (_irPin, INPUT);
+    
+    #ifdef ARDUINO
+      analogReference(DEFAULT);
+    #endif
 }
 
 // Read distance and compute it

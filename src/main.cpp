@@ -1,71 +1,63 @@
-#include "Arduino.h"
 #include <Servo.h>
-#include "SharpIR.h"
 
-#include "Motor.h"
+#include "Arduino.h"
+
+#include "./Robot.h"
 
 #define IR A3 // define signal pin
-#define model 1080 // used 1080 because model GP2Y0A21YK0F is used
 
-Motor left(8, 9, 10);
-Motor right(7, 6, 5);
-SharpIR SharpIR(IR, model);
+#define MOTOR1 {8, 9, 10}
+#define MOTOR2 {7, 6, 5}
 
-Servo myservo;  // create servo object to control a servo
-int pos = 0;    // variable to store the servo position
-
-int analogPin = A3; // potentiometer wiper (middle terminal) connected to analog pin 3
-                    // outside leads to ground and +5V
-int val = 0;  // variable to store the value read
-
-void test_motor();
-void test_servo();
-void test_dist();
+Robot robot(IR, 3, MOTOR1, MOTOR2);
 
 void setup () 
 {
-  // left.init();
-  // right.init();
-  // myservo.attach(9);  // attaches the servo on pin 9 to the servo object
   Serial.begin(9600);           //  setup serial
+  robot.Init();
 }
 
 void loop ()
 {
-  test_dist();
-}
-
-void test_motor ()
-{
-  left.TurnMotor(128, true);
-  right.TurnMotor(128, false);
-  delay(500);
-  left.TurnMotor(0, true);
-  right.TurnMotor(0, true);
-  delay(50);
-
-  left.TurnMotor(128, false);
-  right.TurnMotor(128, true);
-  delay(500);
-  left.TurnMotor(0, true);
-  right.TurnMotor(0, true);
+  robot.Act();
   delay(50);
 }
 
+/*
+
+// void test_motor ()
+// {
+//   // they turn the same way if the input is different
+//   left.TurnMotor(160, false);
+//   right.TurnMotor(100, true);
+//   delay(500);
+// }
+
+int pos;
 void test_servo ()
 {
+  // for (pos = ServoMonoEye::GetMin(); pos <= ServoMonoEye::GetMax(); pos += 1) { // goes from 0 degrees to 180 degrees
+  //   // in steps of 1 degree
+  //   myservo.TurnTo(pos);              // tell servo to go to position in variable 'pos'
+  //   delay(5);                          // waits 15ms for the servo to reach the position
+  // }
+  // for (pos = 180; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
+  //   myservo.TurnTo(pos);              // tell servo to go to position in variable 'pos'
+  //   delay(5);                       // waits 15ms for the servo to reach the position
+  // }
   long dur = 500;
 
-  myservo.write(0);
+  myservo.TurnTo(ServoMonoEye::GetMin());
   delay(dur);
-  myservo.write(180);
+  myservo.TurnTo(ServoMonoEye::GetMax());
   delay(dur);
 }
 
-void test_dist ()
-{
-  val = SharpIR.distance();
-  Serial.println(val);          // debug value
-  delay(500);
-}
+// void test_dist ()
+// {
+//   val = SharpIR.distance();
+//   Serial.println(val);          // debug value
+//   delay(500);
+// }
 
+*/
